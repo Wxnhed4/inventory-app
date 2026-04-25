@@ -131,10 +131,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Insights & Reports')),
       bottomNavigationBar: const AppBottomNav(currentIndex: 4),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
           children: [
             SectionCard(
               child: Column(
@@ -169,27 +168,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 final wasteByIngredient = snapshot.data ?? {};
                 return Column(
                   children: [
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        SizedBox(
-                          width: 220,
-                          child: MetricTile(
-                            label: 'Total Waste Qty',
-                            value: '${_sumQuantities(wasteByIngredient)}',
-                            icon: Icons.delete_outline_rounded,
-                            color: AppColors.accent,
-                          ),
+                    _buildMetricsLayout(
+                      context,
+                      [
+                        MetricTile(
+                          label: 'Total Waste Qty',
+                          value: '${_sumQuantities(wasteByIngredient)}',
+                          icon: Icons.delete_outline_rounded,
+                          color: AppColors.accent,
                         ),
-                        SizedBox(
-                          width: 260,
-                          child: MetricTile(
-                            label: 'Top Wasted Item',
-                            value: _topEntryLabel(wasteByIngredient),
-                            icon: Icons.warning_amber_rounded,
-                            color: AppColors.error,
-                          ),
+                        MetricTile(
+                          label: 'Top Wasted Item',
+                          value: _topEntryLabel(wasteByIngredient),
+                          icon: Icons.warning_amber_rounded,
+                          color: AppColors.error,
                         ),
                       ],
                     ),
@@ -217,27 +209,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 final batchUsage = snapshot.data ?? {};
                 return Column(
                   children: [
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        SizedBox(
-                          width: 220,
-                          child: MetricTile(
-                            label: 'Total Batch Usage',
-                            value: '${_sumQuantities(batchUsage)}',
-                            icon: Icons.precision_manufacturing_outlined,
-                            color: AppColors.primary,
-                          ),
+                    _buildMetricsLayout(
+                      context,
+                      [
+                        MetricTile(
+                          label: 'Total Batch Usage',
+                          value: '${_sumQuantities(batchUsage)}',
+                          icon: Icons.precision_manufacturing_outlined,
+                          color: AppColors.primary,
                         ),
-                        SizedBox(
-                          width: 260,
-                          child: MetricTile(
-                            label: 'Top Used Ingredient',
-                            value: _topEntryLabel(batchUsage),
-                            icon: Icons.bar_chart_rounded,
-                            color: AppColors.primaryDark,
-                          ),
+                        MetricTile(
+                          label: 'Top Used Ingredient',
+                          value: _topEntryLabel(batchUsage),
+                          icon: Icons.bar_chart_rounded,
+                          color: AppColors.primaryDark,
                         ),
                       ],
                     ),
@@ -257,6 +242,28 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMetricsLayout(BuildContext context, List<Widget> children) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 720) {
+      return Column(
+        children: [
+          for (int index = 0; index < children.length; index++) ...[
+            children[index],
+            if (index != children.length - 1) const SizedBox(height: 12),
+          ],
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: children
+          .map((child) => SizedBox(width: 240, child: child))
+          .toList(),
     );
   }
 
@@ -280,8 +287,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
           SectionHeading(title: title, subtitle: subtitle),
           const SizedBox(height: 16),
           if (sortedEntries.isEmpty)
-            SizedBox(
-              height: 180,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: EmptyStateView(
                 icon: emptyIcon,
                 title: 'No data available',
