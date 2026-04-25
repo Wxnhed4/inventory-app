@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,22 +24,60 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
+      print('Attempting login with email: ${_emailController.text.trim()}');
+
+      // Add timeout to prevent indefinite waiting
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          )
+          .timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw TimeoutException(
+                'Login request timed out after 30 seconds. Please check your internet connection.',
+              );
+            },
+          );
+
+      print('Login successful');
+    } on TimeoutException catch (e) {
+      print('Timeout error: $e');
       setState(() {
-        _error = e.message;
+        _error = 'Timeout: ${e.message}';
+      });
+    } on FirebaseAuthException catch (e) {
+      print('Firebase Auth Exception - Code: ${e.code}, Message: ${e.message}');
+      String errorMsg = e.message ?? 'Unknown error';
+
+      // Provide more helpful error messages
+      if (e.code == 'user-not-found') {
+        errorMsg = 'No user found with this email address';
+      } else if (e.code == 'wrong-password') {
+        errorMsg = 'Incorrect password';
+      } else if (e.code == 'invalid-email') {
+        errorMsg = 'Invalid email format';
+      } else if (e.code == 'too-many-requests') {
+        errorMsg = 'Too many login attempts. Please try again later';
+      } else if (e.code == 'operation-not-allowed') {
+        errorMsg = 'Email/password login is disabled';
+      }
+
+      setState(() {
+        _error = errorMsg;
       });
     } catch (e) {
+      print('General error: $e');
       setState(() {
         _error = "Login failed: $e";
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -64,7 +103,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 50),
 
-            
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -77,7 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
 
-            
             TextFormField(
               controller: _passwordController,
               obscureText: true,
@@ -90,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 10),
 
-            
             if (_error != null)
               Text(
                 _error!,
@@ -99,7 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 20),
 
-            
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
