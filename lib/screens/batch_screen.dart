@@ -168,30 +168,7 @@ class _BatchScreenState extends State<BatchScreen> {
                           'Create production batches and automatically deduct ingredients from stock.',
                     ),
                     const SizedBox(height: 20),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        SizedBox(
-                          width: 220,
-                          child: MetricTile(
-                            label: 'Ingredients Available',
-                            value: '${inventoryMap.length}',
-                            icon: Icons.inventory_rounded,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 220,
-                          child: MetricTile(
-                            label: 'Prepared Date',
-                            value: _dateCtrl.text,
-                            icon: Icons.calendar_today_outlined,
-                            color: AppColors.accent,
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildOverviewMetrics(context),
                   ],
                 ),
               ),
@@ -346,6 +323,42 @@ class _BatchScreenState extends State<BatchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildOverviewMetrics(BuildContext context) {
+    final metrics = [
+      MetricTile(
+        label: 'Ingredients Available',
+        value: '${inventoryMap.length}',
+        icon: Icons.inventory_rounded,
+        color: AppColors.primary,
+      ),
+      MetricTile(
+        label: 'Prepared Date',
+        value: _dateCtrl.text,
+        icon: Icons.calendar_today_outlined,
+        color: AppColors.accent,
+      ),
+    ];
+
+    if (MediaQuery.of(context).size.width < 720) {
+      return Column(
+        children: [
+          for (int index = 0; index < metrics.length; index++) ...[
+            metrics[index],
+            if (index != metrics.length - 1) const SizedBox(height: 12),
+          ],
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: metrics
+          .map((metric) => SizedBox(width: 220, child: metric))
+          .toList(),
     );
   }
 
