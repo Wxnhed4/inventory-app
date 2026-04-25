@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:inventory/custom_drawer.dart';
 import 'package:inventory/core/theme/app_colors.dart';
+import 'package:inventory/widgets/app_bottom_nav.dart';
 import 'package:inventory/widgets/section_card.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -186,6 +187,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         title: const Text('Inventory'),
       ),
       drawer: const CustomDrawer(),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 1),
       body: StreamBuilder<QuerySnapshot>(
         stream: _items.orderBy('name').snapshots(),
         builder: (ctx, snapshot) {

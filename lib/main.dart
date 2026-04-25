@@ -95,7 +95,7 @@ class _AppEntryPointState extends State<AppEntryPoint> {
               return const DashboardScreen();
             }
 
-            return const LoginScreen();
+            return const RegisterScreen();
           },
         );
       },

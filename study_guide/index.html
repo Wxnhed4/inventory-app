@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KitchenStock Pro Study Guide</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="brand-icon">KS</div>
+          <div>
+            <h1>Study Guide</h1>
+            <p>KitchenStock Pro</p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="#overview">Overview</a>
+          <a href="#problem">Problem It Solves</a>
+          <a href="#features">Main Features</a>
+          <a href="#technologies">Technologies</a>
+          <a href="#packages">Packages</a>
+          <a href="#structure">Folder Structure</a>
+          <a href="#screens">Screens</a>
+          <a href="#flow">Data Flow</a>
+          <a href="#firebase">Firebase Collections</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#presentation">Presentation Notes</a>
+          <a href="#study-tips">Study Tips</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section class="hero" id="overview">
+          <div class="hero-copy">
+            <p class="eyebrow">Final Project Revision Website</p>
+            <h2>Understand the app like you built it on purpose</h2>
+            <p class="hero-text">
+              This website explains the Flutter project in plain language for a
+              student who wants to study the app, present it confidently, and
+              understand what each part is doing.
+            </p>
+          </div>
+          <div class="hero-panel">
+            <div class="stat-card">
+              <span class="stat-number">Flutter</span>
+              <span class="stat-label">UI framework used</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">Firebase</span>
+              <span class="stat-label">Auth + cloud database</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">5 Core</span>
+              <span class="stat-label">Bottom nav app sections</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid two-col" id="problem">
+          <article class="card">
+            <h3>What is this app?</h3>
+            <p>
+              <strong>KitchenStock Pro</strong> is a smart kitchen operations
+              app. It helps small kitchens manage ingredient stock, record
+              wasted items, track production batches, and view simple insights.
+            </p>
+          </article>
+          <article class="card">
+            <h3>What problem does it solve?</h3>
+            <p>
+              Many kitchens lose money because they do not clearly track stock,
+              waste, or production usage. This app gives them one place to
+              control inventory and reduce avoidable loss.
+            </p>
+          </article>
+        </section>
+
+        <section class="card" id="features">
+          <h3>Main Features</h3>
+          <div class="grid three-col">
+            <div class="mini-card">
+              <h4>Authentication</h4>
+              <p>Users can register, sign in, sign out, and reset passwords.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Onboarding</h4>
+              <p>
+                First-time users see an intro flow explaining the app value.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Dashboard</h4>
+              <p>
+                Shows stock counts, waste records, batch counts, and low-stock
+                items.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Inventory</h4>
+              <p>
+                Add, edit, delete, search, and review ingredient stock levels.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Waste Tracking</h4>
+              <p>
+                Record wasted ingredients, reasons, reporter name, and date.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Batch Tracking</h4>
+              <p>
+                Record a batch and automatically deduct ingredient usage from
+                stock.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Reports</h4>
+              <p>
+                Review waste and usage summaries with ranked insight blocks.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Profile</h4>
+              <p>Shows signed-in user details and highlights app capability.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Settings</h4>
+              <p>
+                Stores simple preferences and can replay onboarding for demos.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="technologies">
+          <h3>Technologies Used</h3>
+          <div class="grid two-col">
+            <div class="mini-card">
+              <h4>Flutter</h4>
+              <p>
+                Builds the user interface. Every screen, button, form, and card
+                comes from Flutter widgets.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Dart</h4>
+              <p>
+                The programming language used to write the app logic and widget
+                code.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Firebase Authentication</h4>
+              <p>
+                Handles user sign up, sign in, logout, and password reset.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Cloud Firestore</h4>
+              <p>
+                Stores the app data online, such as inventory, waste, and
+                batches.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Shared Preferences</h4>
+              <p>
+                Stores simple local settings like onboarding completion and app
+                preferences.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Material 3</h4>
+              <p>
+                Provides the design system and modern Flutter UI components.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="packages">
+          <h3>Packages and Why They Are Used</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Package</th>
+                  <th>Purpose</th>
+                  <th>Simple Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>firebase_core</code></td>
+                  <td>Connects Flutter to Firebase</td>
+                  <td>The app cannot talk to Firebase without this.</td>
+                </tr>
+                <tr>
+                  <td><code>firebase_auth</code></td>
+                  <td>User authentication</td>
+                  <td>Used for register, login, logout, and password reset.</td>
+                </tr>
+                <tr>
+                  <td><code>cloud_firestore</code></td>
+                  <td>Cloud database</td>
+                  <td>Stores stock items, waste records, and batches.</td>
+                </tr>
+                <tr>
+                  <td><code>intl</code></td>
+                  <td>Date formatting</td>
+                  <td>Makes dates display in readable format.</td>
+                </tr>
+                <tr>
+                  <td><code>shared_preferences</code></td>
+                  <td>Small local storage</td>
+                  <td>Remembers onboarding and settings on the device.</td>
+                </tr>
+                <tr>
+                  <td><code>flutter_test</code></td>
+                  <td>Testing</td>
+                  <td>Used to run widget tests.</td>
+                </tr>
+                <tr>
+                  <td><code>flutter_lints</code></td>
+                  <td>Code quality</td>
+                  <td>Helps catch mistakes and keep cleaner code.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="structure">
+          <h3>Folder Structure</h3>
+          <p class="section-note">
+            This is the most important structure to remember when explaining the
+            project.
+          </p>
+          <pre><code>inventory/
+├── lib/
+│   ├── core/
+│   │   └── theme/
+│   │       ├── app_colors.dart
+│   │       └── app_theme.dart
+│   ├── screens/
+│   │   ├── onboarding_screen.dart
+│   │   ├── login_screen.dart
+│   │   ├── register_screen.dart
+│   │   ├── forgot_password_screen.dart
+│   │   ├── dashboard_screen.dart
+│   │   ├── inventory_screen.dart
+│   │   ├── waste_screen.dart
+│   │   ├── batch_screen.dart
+│   │   ├── reports_screen.dart
+│   │   ├── profile_screen.dart
+│   │   └── settings_screen.dart
+│   ├── services/
+│   │   ├── auth_service.dart
+│   │   └── app_preferences_service.dart
+│   ├── widgets/
+│   │   ├── app_bottom_nav.dart
+│   │   └── section_card.dart
+│   ├── custom_drawer.dart
+│   ├── firebase_options.dart
+│   └── main.dart
+├── test/
+├── pubspec.yaml
+├── README.md
+└── TECH_STACK.md</code></pre>
+        </section>
+
+        <section class="card" id="screens">
+          <h3>Screens and What They Do</h3>
+          <div class="grid two-col">
+            <div class="mini-card">
+              <h4>Onboarding</h4>
+              <p>Explains the app when the user opens it for the first time.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Register</h4>
+              <p>Creates a new user account using Firebase Authentication.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Login</h4>
+              <p>Lets an existing user sign in with email and password.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Forgot Password</h4>
+              <p>Sends a reset email to the user's email address.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Dashboard</h4>
+              <p>Shows summary information and quick actions.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Inventory</h4>
+              <p>Manages stock items and shows low-stock conditions.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Waste</h4>
+              <p>Records wasted ingredients and stores the reason.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Batch</h4>
+              <p>Creates production entries using ingredient stock.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Reports</h4>
+              <p>Summarizes waste and ingredient usage data.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Profile and Settings</h4>
+              <p>Shows account info and stores simple preferences.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="flow">
+          <h3>How Data Flows in the App</h3>
+          <div class="flow-row">
+            <div class="flow-box">UI Screen</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Controllers / Form Values</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Service or Screen Logic</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Firebase Auth / Firestore</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">UI Updates</div>
+          </div>
+
+          <div class="grid two-col spaced-top">
+            <div class="mini-card">
+              <h4>Example 1: Login</h4>
+              <p>
+                User enters email and password, the app calls Firebase Auth, and
+                then the auth state decides which screen to show.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>Example 2: Add inventory item</h4>
+              <p>
+                User submits the form, Firestore stores the item, and the
+                inventory list refreshes from the stream.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="firebase">
+          <h3>Firestore Collections</h3>
+          <div class="grid three-col">
+            <div class="mini-card">
+              <h4><code>inventory</code></h4>
+              <p>Stores ingredient name, quantity, and unit.</p>
+              <pre><code>{
+  "name": "Flour",
+  "quantity": 20,
+  "unit": "kg"
+}</code></pre>
+            </div>
+            <div class="mini-card">
+              <h4><code>waste</code></h4>
+              <p>Stores wasted item info and reason.</p>
+              <pre><code>{
+  "itemName": "Flour",
+  "wastedQty": 2,
+  "unit": "kg",
+  "reason": "Spoiled"
+}</code></pre>
+            </div>
+            <div class="mini-card">
+              <h4><code>batches</code></h4>
+              <p>Stores batch details and used ingredients.</p>
+              <pre><code>{
+  "batchName": "Cake Mix",
+  "ingredients": [
+    { "name": "Flour", "used": 5, "unit": "kg" }
+  ]
+}</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid two-col" id="architecture">
+          <article class="card">
+            <h3>Why there is a <code>services</code> folder</h3>
+            <p>
+              Services keep logic out of the UI. For example, the auth service
+              handles sign in and sign up instead of making every screen talk
+              directly to Firebase in a messy way.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Why there is a <code>widgets</code> folder</h3>
+            <p>
+              Widgets like the bottom navigation and section cards are reused in
+              many places, so putting them in one folder avoids repetition.
+            </p>
+          </article>
+        </section>
+
+        <section class="card" id="presentation">
+          <h3>How to Explain It in a Presentation</h3>
+          <ol class="steps">
+            <li>
+              Start with the problem: kitchens lose money when inventory and
+              waste are not tracked well.
+            </li>
+            <li>
+              Explain the solution: this app manages stock, waste, batches, and
+              insights in one system.
+            </li>
+            <li>
+              Mention the tech stack: Flutter for UI, Firebase Auth for login,
+              Firestore for data.
+            </li>
+            <li>
+              Show the user flow: onboarding, register/login, dashboard,
+              inventory, waste, batch, reports.
+            </li>
+            <li>
+              End with impact: better inventory control, lower waste, smarter
+              kitchen decisions.
+            </li>
+          </ol>
+        </section>
+
+        <section class="card" id="study-tips">
+          <h3>Study Tips for a Clueless Student</h3>
+          <div class="grid two-col">
+            <div class="mini-card">
+              <h4>Memorize these 4 ideas</h4>
+              <ul>
+                <li>Flutter builds the screens.</li>
+                <li>Firebase Auth handles users.</li>
+                <li>Firestore stores app data.</li>
+                <li>Services help keep code cleaner.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>If asked “why this project?”</h4>
+              <p>
+                Say it solves a real operations problem for small kitchens by
+                helping them reduce waste and manage stock more efficiently.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>If asked “why Flutter?”</h4>
+              <p>
+                Say Flutter allows fast cross-platform development from one
+                codebase while still giving a modern mobile UI.
+              </p>
+            </div>
+            <div class="mini-card">
+              <h4>If asked “why Firebase?”</h4>
+              <p>
+                Say Firebase gives authentication and cloud data storage without
+                building a full custom backend.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

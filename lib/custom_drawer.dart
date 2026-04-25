@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_colors.dart';
+import 'screens/register_screen.dart';
 import 'services/auth_service.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -92,6 +93,12 @@ class CustomDrawer extends StatelessWidget {
             onTap: () async {
               Navigator.pop(context);
               await AuthService().signOut();
+              if (!context.mounted) return;
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RegisterScreen.routeName,
+                (route) => false,
+              );
             },
           ),
           const SizedBox(height: 24),

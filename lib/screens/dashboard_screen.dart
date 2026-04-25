@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../custom_drawer.dart';
+import '../widgets/app_bottom_nav.dart';
 import '../widgets/section_card.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -48,6 +49,7 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
       drawer: const CustomDrawer(),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 0),
       body: FutureBuilder<_DashboardData>(
         future: _loadDashboardData(),
         builder: (context, snapshot) {

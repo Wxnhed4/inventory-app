@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:inventory/custom_drawer.dart';
 import 'package:inventory/core/theme/app_colors.dart';
+import 'package:inventory/widgets/app_bottom_nav.dart';
 import 'package:inventory/widgets/section_card.dart';
 
 class BatchScreen extends StatefulWidget {
@@ -149,6 +150,7 @@ class _BatchScreenState extends State<BatchScreen> {
         title: const Text('Batch Production'),
       ),
       drawer: const CustomDrawer(),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 3),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(

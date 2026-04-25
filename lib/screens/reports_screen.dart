@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../core/theme/app_colors.dart';
+import '../widgets/app_bottom_nav.dart';
 import '../widgets/section_card.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -129,6 +130,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Insights & Reports')),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 4),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:inventory/custom_drawer.dart';
 import 'package:inventory/core/theme/app_colors.dart';
+import 'package:inventory/widgets/app_bottom_nav.dart';
 import 'package:inventory/widgets/section_card.dart';
 
 class WasteScreen extends StatefulWidget {
@@ -150,6 +151,7 @@ class _WasteScreenState extends State<WasteScreen> {
         title: const Text('Waste Tracking'),
       ),
       drawer: const CustomDrawer(),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 2),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
