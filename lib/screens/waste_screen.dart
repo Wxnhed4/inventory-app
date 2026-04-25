@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import 'package:inventory/custom_drawer.dart';
+import 'package:inventory/core/theme/app_colors.dart';
+import 'package:inventory/widgets/section_card.dart';
 
 class WasteScreen extends StatefulWidget {
   const WasteScreen({super.key});
@@ -66,7 +68,6 @@ class _WasteScreenState extends State<WasteScreen> {
 
   void _recordWaste() async {
     final amountStr = _amountCtrl.text.trim();
-    print('Saving waste: $_selectedItemId, $_selectedItemName, $amountStr');
     if (_selectedItemId == null) {
       ScaffoldMessenger.of(
         context,
@@ -107,7 +108,6 @@ class _WasteScreenState extends State<WasteScreen> {
     }
 
     try {
-      // 1. Record waste
       await _waste.add({
         'itemId': _selectedItemId,
         'itemName': _selectedItemName,
@@ -119,20 +119,16 @@ class _WasteScreenState extends State<WasteScreen> {
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      // 2. Update inventory
       await _items.doc(_selectedItemId!).update({
         'quantity': currentQty - amount,
       });
 
-      // 3. Refresh inventory
       _loadInventory();
-
-      
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('$amount $unit of $_selectedItemName wasted')),
       );
 
-      
       setState(() {
         _selectedItemName = null;
         _selectedItemId = null;
@@ -151,35 +147,64 @@ class _WasteScreenState extends State<WasteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Record Waste',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: const Text('Waste Tracking'),
       ),
-      drawer: CustomDrawer(context: context),
+      drawer: const CustomDrawer(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
-            Card(
+            SectionCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SectionHeading(
+                    title: 'Waste Control',
+                    subtitle:
+                        'Log damaged or spoiled ingredients and keep the stock accurate.',
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      SizedBox(
+                        width: 220,
+                        child: MetricTile(
+                          label: 'Tracked Items',
+                          value: '${inventoryMap.length}',
+                          icon: Icons.inventory_2_rounded,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 220,
+                        child: MetricTile(
+                          label: 'Waste Reasons',
+                          value: '${reasons.length}',
+                          icon: Icons.rule_folder_outlined,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SectionCard(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Add Waste',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SectionHeading(
+                      title: 'Record New Waste',
+                      subtitle:
+                          'Select an ingredient, quantity lost, and the reason for the waste.',
                     ),
                     const SizedBox(height: 16),
-
                     DropdownButtonFormField<String>(
                       initialValue: _selectedItemName,
                       hint: const Text('Select Product'),
@@ -200,18 +225,15 @@ class _WasteScreenState extends State<WasteScreen> {
                       decoration: const InputDecoration(labelText: 'Product'),
                     ),
                     const SizedBox(height: 16),
-
-                    
                     TextField(
                       controller: _amountCtrl,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         labelText: 'Amount Wasted',
+                        prefixIcon: Icon(Icons.remove_circle_outline_rounded),
                       ),
                     ),
                     const SizedBox(height: 16),
-
-                    
                     DropdownButtonFormField<String>(
                       initialValue: _reason,
                       items: reasons
@@ -227,11 +249,11 @@ class _WasteScreenState extends State<WasteScreen> {
                       decoration: const InputDecoration(labelText: 'Reason'),
                     ),
                     const SizedBox(height: 16),
-
                     TextField(
                       controller: _dateCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Date (YYYY-MM-DD)',
+                        prefixIcon: Icon(Icons.calendar_today_outlined),
                       ),
                       onTap: () async {
                         final date = await showDatePicker(
@@ -253,40 +275,40 @@ class _WasteScreenState extends State<WasteScreen> {
                       controller: _chefCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Reported By',
+                        prefixIcon: Icon(Icons.person_outline_rounded),
                       ),
                     ),
                     const SizedBox(height: 16),
-
                     ElevatedButton(
                       onPressed: _recordWaste,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      child: const Text(
-                        'Record Waste',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: const Text('Record Waste'),
                     ),
                   ],
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const _WasteHistoryScreen(),
+            SectionCard(
+              child: Column(
+                children: [
+                  const SectionHeading(
+                    title: 'History',
+                    subtitle:
+                        'Review previous waste records for auditing and reporting.',
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-              child: const Text(
-                'See All Wastes',
-                style: TextStyle(color: Colors.white),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const _WasteHistoryScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('See All Waste Records'),
+                  ),
+                ],
               ),
             ),
           ],
@@ -317,12 +339,7 @@ class _WasteHistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'All Waste Records',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: const Text('Waste History'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: waste.orderBy('timestamp', descending: true).snapshots(),
@@ -333,13 +350,17 @@ class _WasteHistoryScreen extends StatelessWidget {
 
           final docs = snapshot.data?.docs ?? [];
           if (docs.isEmpty) {
-            return const Center(child: Text('No waste records yet'));
+            return const EmptyStateView(
+              icon: Icons.delete_outline_rounded,
+              title: 'No waste records yet',
+              subtitle: 'Your logged waste entries will appear here.',
+            );
           }
 
-          return ListView.builder(
-            itemCount: docs.length,
-            itemBuilder: (ctx, index) {
-              final data = docs[index].data() as Map<String, dynamic>;
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
               final name = data['itemName'] ?? 'Unknown';
               final qty = data['wastedQty'] as int? ?? 0;
               final unit = data['unit'] ?? '';
@@ -347,11 +368,45 @@ class _WasteHistoryScreen extends StatelessWidget {
               final chef = data['chef'] ?? 'Unknown';
               final date = data['date'] ?? 'Unknown';
 
-              return ListTile(
-                title: Text('$name - $qty $unit'),
-                subtitle: Text('$reason • $date • by $chef'),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: SectionCard(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor:
+                            AppColors.accent.withValues(alpha: 0.12),
+                        foregroundColor: AppColors.accent,
+                        child: const Icon(Icons.delete_sweep_rounded),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '$name - $qty $unit',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '$reason • $date • by $chef',
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
-            },
+            }).toList(),
           );
         },
       ),

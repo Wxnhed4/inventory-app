@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import 'package:inventory/custom_drawer.dart';
+import 'package:inventory/core/theme/app_colors.dart';
+import 'package:inventory/widgets/section_card.dart';
 
 class BatchScreen extends StatefulWidget {
   const BatchScreen({super.key});
@@ -65,8 +67,6 @@ class _BatchScreenState extends State<BatchScreen> {
     final date = _dateCtrl.text;
     final List<Map<String, dynamic>> ingredients = [];
 
-    print('Saving batch: $batchName, ingredients: $ingredients');
-
     if (batchName.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -120,6 +120,7 @@ class _BatchScreenState extends State<BatchScreen> {
         }
       }
 
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Batch "$batchName" recorded')));
@@ -134,6 +135,7 @@ class _BatchScreenState extends State<BatchScreen> {
 
       _loadInventory();
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -144,37 +146,72 @@ class _BatchScreenState extends State<BatchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'New Batch',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: const Text('Batch Production'),
       ),
-      drawer: CustomDrawer(context: context),
+      drawer: const CustomDrawer(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
+            SectionCard(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Create Batch',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SectionHeading(
+                      title: 'Batch Overview',
+                      subtitle:
+                          'Create production batches and automatically deduct ingredients from stock.',
+                    ),
+                    const SizedBox(height: 20),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: [
+                        SizedBox(
+                          width: 220,
+                          child: MetricTile(
+                            label: 'Ingredients Available',
+                            value: '${inventoryMap.length}',
+                            icon: Icons.inventory_rounded,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 220,
+                          child: MetricTile(
+                            label: 'Prepared Date',
+                            value: _dateCtrl.text,
+                            icon: Icons.calendar_today_outlined,
+                            color: AppColors.accent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SectionCard(
+              child: Padding(
+                padding: const EdgeInsets.all(0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SectionHeading(
+                      title: 'Create Batch',
+                      subtitle:
+                          'Enter the batch details and the quantities consumed from inventory.',
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _nameCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Product / Batch Name',
+                        prefixIcon: Icon(Icons.layers_outlined),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -182,6 +219,7 @@ class _BatchScreenState extends State<BatchScreen> {
                       controller: _noteCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Note (e.g., Batch #1)',
+                        prefixIcon: Icon(Icons.note_alt_outlined),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -189,6 +227,7 @@ class _BatchScreenState extends State<BatchScreen> {
                       controller: _dateCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Date (YYYY-MM-DD)',
+                        prefixIcon: Icon(Icons.calendar_today_outlined),
                       ),
                       onTap: () async {
                         final date = await showDatePicker(
@@ -209,6 +248,7 @@ class _BatchScreenState extends State<BatchScreen> {
                       controller: _chefCtrl,
                       decoration: const InputDecoration(
                         labelText: 'Prepared By',
+                        prefixIcon: Icon(Icons.person_outline_rounded),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -218,7 +258,7 @@ class _BatchScreenState extends State<BatchScreen> {
                     ),
                     const SizedBox(height: 8),
                     SizedBox(
-                      height: 200,
+                      height: 260,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: inventoryMap.length,
@@ -227,12 +267,26 @@ class _BatchScreenState extends State<BatchScreen> {
                           final available = inventoryMap[name]!;
                           final unit = _itemUnits[name] ?? '';
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Row(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: const Color(0xFFE5E7EB),
+                                ),
+                              ),
+                              child: Row(
                               children: [
                                 Expanded(
                                   flex: 3,
-                                  child: Text('$name ($available $unit)'),
+                                  child: Text(
+                                    '$name ($available $unit)',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -247,6 +301,7 @@ class _BatchScreenState extends State<BatchScreen> {
                                   ),
                                 ),
                               ],
+                              ),
                             ),
                           );
                         },
@@ -255,32 +310,35 @@ class _BatchScreenState extends State<BatchScreen> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _createBatch,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      child: const Text(
-                        'Create Batch',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: const Text('Create Batch'),
                     ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const _BatchHistoryScreen(),
+            SectionCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SectionHeading(
+                    title: 'History',
+                    subtitle:
+                        'Open the full batch history to review production runs and ingredient usage.',
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-              child: const Text(
-                'See All Batches',
-                style: TextStyle(color: Colors.white),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const _BatchHistoryScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('See All Batches'),
+                  ),
+                ],
               ),
             ),
           ],
@@ -313,12 +371,7 @@ class _BatchHistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'All Batches',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: const Text('Batch History'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: batches.orderBy('timestamp', descending: true).snapshots(),
@@ -329,16 +382,20 @@ class _BatchHistoryScreen extends StatelessWidget {
 
           final docs = snapshot.data?.docs ?? [];
           if (docs.isEmpty) {
-            return const Center(child: Text('No batches yet'));
+            return const EmptyStateView(
+              icon: Icons.layers_clear_outlined,
+              title: 'No batches yet',
+              subtitle: 'Created batches will appear here with their details.',
+            );
           }
 
-          return ListView.builder(
-            itemCount: docs.length,
-            itemBuilder: (ctx, index) {
-              final data = docs[index].data() as Map<String, dynamic>;
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
               final name = data['batchName'] as String;
-              final chef = data['chef'] as String;
-              final date = data['date'] as String;
+              final chef = data['chef'] as String? ?? 'Unknown';
+              final date = data['date'] as String? ?? 'Unknown';
 
               final ingredients = (data['ingredients'] as List)
                   .map((item) {
@@ -349,40 +406,50 @@ class _BatchHistoryScreen extends StatelessWidget {
                   })
                   .join(', ');
 
-              return ExpansionTile(
-                title: Text(name),
-                subtitle: Text('$date • by $chef'),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: SectionCard(
+                  padding: const EdgeInsets.all(0),
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.symmetric(
                       horizontal: 16,
+                      vertical: 4,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          ingredients,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        if ((data['note'] as String? ?? '').isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              'Note: ${data['note']}',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.grey,
-                              ),
+                    title: Text(
+                      name,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    subtitle: Text('$date • by $chef'),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ingredients,
+                              style: const TextStyle(fontSize: 14),
                             ),
-                          ),
-                      ],
-                    ),
+                            if ((data['note'] as String? ?? '').isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  'Note: ${data['note']}',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontStyle: FontStyle.italic,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               );
-            },
+            }).toList(),
           );
         },
       ),
