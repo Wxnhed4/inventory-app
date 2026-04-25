@@ -165,8 +165,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Widget _buildReportSection(
     String title,
-    Map<String, Map<String, dynamic>> data,
-  ) {
+    Map<String, Map<String, dynamic>> data,) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
